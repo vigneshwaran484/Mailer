@@ -201,7 +201,7 @@ app.get('/api/config', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`\n🚀 Toeddro Mailer running at http://localhost:${PORT}`);
+  console.log(`\n🚀 Swift Mailer running at http://localhost:${PORT}`);
   console.log(`📧 SMTP User: ${process.env.SMTP_USER || 'NOT CONFIGURED'}`);
   console.log(`\nMake sure to configure your .env file with SMTP credentials!\n`);
 });

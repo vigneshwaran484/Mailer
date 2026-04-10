@@ -265,7 +265,7 @@ function getEmailHtml(bodyText) {
     <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 32px; background: #ffffff; color: #1a1a2e; line-height: 1.8; font-size: 15px;">
       <div style="white-space: pre-wrap; word-wrap: break-word;">${htmlBody}</div>
       <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;">
-      <p style="font-size: 12px; color: #9ca3af;">Sent via Toeddro Outreach</p>
+      <p style="font-size: 12px; color: #9ca3af;">Sent via Swift Mailer</p>
     </div>
   `;
 }

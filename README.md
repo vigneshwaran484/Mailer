@@ -1,6 +1,6 @@
-# 🚀 Toeddro Mailer
+# 🚀 Swift Mailer
 
-Toeddro Mailer is a premium, high-performance bulk email sender designed for partnership outreach. It features a stunning, modern web interface with real-time progress tracking, flexible recipient management, and dynamic content loading.
+Swift Mailer is a premium, high-performance bulk email sender designed for marketing and outreach. It features a stunning, modern web interface with real-time progress tracking, flexible recipient management, and dynamic content loading.
 
 ![Mailer UI](https://img.shields.io/badge/UI-Modern%20Dark-blueviolet)
 ![Tech](https://img.shields.io/badge/Tech-Node.js%20%7C%20Express%20%7C%20Nodemailer-green)
@@ -56,7 +56,7 @@ SMTP_USER=your-email@gmail.com
 SMTP_PASS=your-app-password
 
 # Sender Info
-SENDER_NAME=Joice
+SENDER_NAME=Mailer
 SENDER_EMAIL=your-email@gmail.com
 
 # Timing
@@ -85,7 +85,7 @@ The application will be available at: **[http://localhost:3000](http://localhost
 ## 🔒 Security Note
 
 - **.env Safety**: Never commit your `.env` file to public repositories. It contains sensitive credentials.
-- **Rate Limiting**: Most SMTP providers (like Gmail) have daily sending limits (usually 500-2000 per day). Respect these to avoid account suspension.
+- **Rate Limits**: Most SMTP providers (like Gmail) have daily sending limits. Respect these to avoid account suspension.
 
 ---
 

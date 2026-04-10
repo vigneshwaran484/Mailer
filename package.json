@@ -1,7 +1,7 @@
 {
-  "name": "toeddro-mailer",
+  "name": "swift-mailer",
   "version": "1.0.0",
-  "description": "Bulk email sender for Toeddro partnership outreach",
+  "description": "Premium bulk email sender for marketing and outreach",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
