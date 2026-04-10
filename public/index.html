@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Toeddro Mailer — Bulk Email Sender</title>
+  <meta name="description" content="Send partnership outreach emails to adventure operators via Toeddro Mailer">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- Animated Background -->
+  <div class="bg-grid"></div>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+  <div class="bg-glow bg-glow-3"></div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+            <polyline points="22,6 12,13 2,6" />
+          </svg>
+        </div>
+        <span class="logo-text">Toeddro Mailer</span>
+      </div>
+      <div class="header-status" id="smtpStatus">
+        <span class="status-dot"></span>
+        <span class="status-text">Checking SMTP...</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- Step 1: SMTP Config Status -->
+    <section class="card card-config" id="configCard">
+      <div class="card-header">
+        <div class="step-badge">1</div>
+        <div>
+          <h2 class="card-title">SMTP Configuration</h2>
+          <p class="card-subtitle">Verify your email server connection</p>
+        </div>
+      </div>
+      <div class="config-grid" id="configGrid">
+        <!-- Populated by JS -->
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary" id="btnVerify" onclick="verifySmtp()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
+          </svg>
+          Verify Connection
+        </button>
+      </div>
+    </section>
+
+    <!-- Step 2: Recipients -->
+    <section class="card card-recipients" id="recipientsCard">
+      <div class="card-header">
+        <div class="step-badge">2</div>
+        <div>
+          <h2 class="card-title">Recipients</h2>
+          <p class="card-subtitle">Add email addresses to send to</p>
+        </div>
+        <div class="recipient-count" id="recipientCount">0 recipients</div>
+      </div>
+
+      <div class="input-methods">
+        <!-- Manual Input -->
+        <div class="input-method">
+          <label class="input-label">Paste emails (one per line, or comma/semicolon separated)</label>
+          <textarea id="emailInput" class="textarea" rows="5"
+            placeholder="operator1@example.com&#10;operator2@example.com&#10;operator3@example.com"></textarea>
+          <button class="btn btn-secondary" onclick="addManualEmails()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Add Emails
+          </button>
+        </div>
+
+        <div class="divider-or"><span>OR</span></div>
+
+        <!-- CSV Upload -->
+        <div class="input-method">
+          <label class="input-label">Upload CSV / Text file</label>
+          <div class="upload-zone" id="uploadZone" onclick="document.getElementById('csvFile').click()">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            <p>Click to upload or drag & drop</p>
+            <span class="upload-hint">CSV, TXT files supported</span>
+          </div>
+          <input type="file" id="csvFile" accept=".csv,.txt,.xlsx" hidden onchange="uploadCSV(this)">
+        </div>
+      </div>
+
+      <!-- Email List -->
+      <div class="email-list-container" id="emailListContainer" style="display:none;">
+        <div class="email-list-header">
+          <h3>Email List</h3>
+          <button class="btn btn-ghost btn-danger" onclick="clearAllEmails()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+            </svg>
+            Clear All
+          </button>
+        </div>
+        <div class="email-chips" id="emailChips"></div>
+      </div>
+    </section>
+
+    <!-- Step 3: Email Content -->
+    <section class="card card-content" id="contentCard">
+      <div class="card-header">
+        <div class="step-badge">3</div>
+        <div>
+          <h2 class="card-title">Email Content</h2>
+          <p class="card-subtitle">Customize your outreach message</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="input-label" for="emailSubject">Subject Line</label>
+        <input type="text" id="emailSubject" class="input" value=" " placeholder="Email subject...">
+      </div>
+
+      <div class="content-actions">
+        <div class="content-tabs">
+          <button class="tab active" onclick="switchTab('edit')" id="tabEdit">Edit</button>
+          <button class="tab" onclick="switchTab('preview')" id="tabPreview">Preview</button>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('contentFile').click()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
+          Upload Text File
+        </button>
+        <input type="file" id="contentFile" accept=".txt,.html" hidden onchange="uploadContentFile(this)">
+      </div>
+
+      <div id="editPane" class="tab-pane active">
+        <textarea id="emailBody" class="textarea textarea-large" rows="16"
+          placeholder="Type your email content here, or upload a text file..."></textarea>
+      </div>
+
+      <div id="previewPane" class="tab-pane" style="display:none;">
+        <div class="email-preview" id="emailPreview"></div>
+      </div>
+    </section>
+
+    <!-- Step 4: Send -->
+    <section class="card card-send" id="sendCard">
+      <div class="card-header">
+        <div class="step-badge">4</div>
+        <div>
+          <h2 class="card-title">Send Emails</h2>
+          <p class="card-subtitle">Review and launch your campaign</p>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <div class="send-summary" id="sendSummary">
+        <div class="summary-item">
+          <span class="summary-label">Recipients</span>
+          <span class="summary-value" id="summaryRecipients">0</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Subject</span>
+          <span class="summary-value" id="summarySubject">—</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Delay</span>
+          <span class="summary-value" id="summaryDelay">2s</span>
+        </div>
+      </div>
+
+      <!-- Progress -->
+      <div class="progress-section" id="progressSection" style="display:none;">
+        <div class="progress-stats">
+          <div class="stat stat-sent">
+            <span class="stat-number" id="statSent">0</span>
+            <span class="stat-label">Sent</span>
+          </div>
+          <div class="stat stat-failed">
+            <span class="stat-number" id="statFailed">0</span>
+            <span class="stat-label">Failed</span>
+          </div>
+          <div class="stat stat-total">
+            <span class="stat-number" id="statTotal">0</span>
+            <span class="stat-label">Total</span>
+          </div>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <p class="progress-text" id="progressText">Preparing...</p>
+      </div>
+
+      <!-- Logs -->
+      <div class="log-container" id="logContainer" style="display:none;">
+        <h3 class="log-title">Activity Log</h3>
+        <div class="log-entries" id="logEntries"></div>
+      </div>
+
+      <div class="card-actions card-actions-send">
+        <button class="btn btn-send" id="btnSend" onclick="startSending()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13" />
+            <polygon points="22 2 15 22 11 13 2 9 22 2" />
+          </svg>
+          Launch Campaign
+        </button>
+        <button class="btn btn-abort" id="btnAbort" onclick="abortSending()" style="display:none;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+          </svg>
+          Abort
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Toast -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
